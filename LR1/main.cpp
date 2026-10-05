@@ -308,8 +308,7 @@ void bucket_sort(iterator start, iterator end) {
         }
     }
 }
-
-int main() {
+auto main() -> signed {
     DynamicArray<elem> data;
     elem el;
     while (std::cin >> el.key) {
