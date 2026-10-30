@@ -87,7 +87,7 @@ private:
         return res;
     }
 public:
-    inline static std::vector<std::pair<int, int>> compress(const std::string& str) { return rle_compressor(mwt(make_bwt_string(str + '$'))); }
+    inline static auto compress(const std::string& str) -> std::vector<std::pair<int, int>>  { return rle_compressor(mwt(make_bwt_string(str + '$'))); }
 };
 
 class Decompresser {
@@ -136,7 +136,7 @@ private:
         return res;
     }
 public:
-    inline static std::string decompress(const std::vector<std::pair<int, int>>& codes) { return make_string_of_bwt(make_string_of_mwt(rle_decompressor(codes))); }
+    inline static auto decompress(const std::vector<std::pair<int, int>>& codes) -> std::string { return make_string_of_bwt(make_string_of_mwt(rle_decompressor(codes))); }
 };
 };
 
