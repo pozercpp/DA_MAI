@@ -102,6 +102,7 @@ private:
         std::vector<char> alph(alphabet.begin(), alphabet.end());
         int n = int(mwt.size());
         std::string res;
+        res.reserve(n);
         for (int i{0}; i < n; ++i) {
             auto pos = mwt[i];
             char c = alph[pos];
