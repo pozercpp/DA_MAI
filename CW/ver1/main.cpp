@@ -18,7 +18,7 @@ private:
     inline static auto build_sa(const std::string& s) -> std::vector<int> {
         int n = int(s.size());
         std::vector<int> p(n);
-        std::vector<int> c(n, 0), cnt(std::max(alphabet_size, n), 0);
+        std::vector<int> c(n), cnt(std::max(alphabet_size, n));
         for (int i = 0; i < n; i++) ++cnt[uchar(s[i])];
         for (int i = 0; i + 1 < alphabet_size; i++) cnt[i + 1] += cnt[i];
         for (int i = 0; i < n; i++) p[--cnt[uchar(s[i])]] = i;
