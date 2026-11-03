@@ -72,7 +72,7 @@ private:
         }
         return res;
     }
-    inline static auto mwt(const std::string& str) -> std::vector<int> {
+    inline static auto mtf(const std::string& str) -> std::vector<int> {
         std::vector<char> alph(alphabet.begin(), alphabet.end());
         int n = int(str.size());
         std::vector<int> res;
@@ -86,7 +86,7 @@ private:
         return res;
     }
 public:
-    inline static auto compress(const std::string& str) -> std::vector<std::pair<int, int>>  { return rle_compressor(mwt(make_bwt_string(str + '$'))); }
+    inline static auto compress(const std::string& str) -> std::vector<std::pair<int, int>>  { return rle_compressor(mtf(make_bwt_string(str + '$'))); }
 };
 
 class Decompresser {
@@ -98,13 +98,13 @@ private:
         }
         return res;
     }
-    inline static auto make_string_of_mwt(const std::vector<int>& mwt) -> std::string {
+    inline static auto make_string_of_mtf(const std::vector<int>& mtf) -> std::string {
         std::vector<char> alph(alphabet.begin(), alphabet.end());
-        int n = int(mwt.size());
+        int n = int(mtf.size());
         std::string res;
         res.reserve(n);
         for (int i{0}; i < n; ++i) {
-            auto pos = mwt[i];
+            auto pos = mtf[i];
             char c = alph[pos];
             res += c;
             alph.erase(alph.begin() + pos);
@@ -136,7 +136,7 @@ private:
         return res;
     }
 public:
-    inline static auto decompress(const std::vector<std::pair<int, int>>& codes) -> std::string { return make_string_of_bwt(make_string_of_mwt(rle_decompressor(codes))); }
+    inline static auto decompress(const std::vector<std::pair<int, int>>& codes) -> std::string { return make_string_of_bwt(make_string_of_mtf(rle_decompressor(codes))); }
 };
 };
 
