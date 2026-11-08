@@ -1,23 +1,15 @@
 #include <iostream>
-#include <vector>
 #include <queue>
 
 class graph {
 public:
-    graph() = default;
-    ~graph() = default;
-    graph(const graph&) = default;
-    graph(graph&&) = default;
-    graph& operator =(const graph&) = default;
-    graph& operator =(graph&&) = default;
-    graph(size_t n_) : graph() {
+    inline graph() = default;
+    inline graph(size_t n_) : graph() {
         n = n_;
         g.reserve(n);
     }
-    void add(size_t u, size_t v) {
-        g[u].push_back(v);
-    }
-    graph(size_t n_, size_t m) : graph(n_) {
+    inline void add(size_t u, size_t v) { g[u].push_back(v); }
+    inline graph(size_t n_, size_t m) : graph(n_) {
         g.reserve(n);
         for (size_t i{0}; i < m; ++i) {
             size_t u, v;
@@ -26,7 +18,7 @@ public:
             add(u, v);
         }
     }
-    [[nodiscard]]std::pair<bool, std::vector<size_t>> top_sort() const {
+    [[nodiscard]] inline std::pair<bool, std::vector<size_t>> top_sort() const {
         std::vector<size_t> in(n);
         for (size_t u{0}; u < n; ++u) {
             for (auto v : g[u]) ++in[v];
@@ -47,7 +39,7 @@ public:
         }
         return {res.size() == n, res};
     }
-    size_t size() const { return n; }
+    inline size_t size() const noexcept { return n; }
 private:
     size_t n;
     std::vector<std::vector<size_t>> g;
@@ -70,13 +62,6 @@ inline void solve() {
 auto main() -> signed {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-    size_t t{1};
-#ifdef MULTITEST
-    std::cin >> t;
-#endif
-    while (t--) {
-        solve();
-        std::cout << '\n';
-    }
+	solve();
     return 0;
 }
