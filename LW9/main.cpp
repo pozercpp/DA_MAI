@@ -25,7 +25,7 @@ template<HasGreater T> using min_pq = std::priority_queue<T, std::vector<T>, std
 template <Weight T> struct Edge { 
     T w;
     size_t to;
-    auto operator <=>(const Edge&) const noexcept = default;
+    inline auto operator <=>(const Edge&) const noexcept = default;
 };
 
 template<Weight T> inline auto inf() -> T { return std::numeric_limits<T>::max(); }
