@@ -36,7 +36,7 @@ public:
     inline explicit Graph(size_t n_) : n(n_ + 1), g(n) {
         for (size_t i{1}; i < n; ++i) add(0, i, 0);
     }
-    void add(size_t u, size_t v, T w) {  g[u].emplace_back(w, v); }
+    inline void add(size_t u, size_t v, T w) {  g[u].emplace_back(w, v); }
     [[nodiscard]] inline auto get_distance() -> std::optional<std::vector<std::vector<T>>> {
         auto dp = FordBelman(0);
         if (!dp.has_value()) return std::nullopt;
