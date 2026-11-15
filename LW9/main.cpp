@@ -89,6 +89,7 @@ private:
                     if (chmin(dp[v], dp[u] + w)) is_relaxed = true;
                 }
             }
+            if (!is_relaxed) break;
         }
         if (is_relaxed) return std::nullopt;
         return dp;
