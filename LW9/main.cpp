@@ -1,5 +1,6 @@
 #include <iostream>
-#include <queue>
+#include <vector>
+#include <set>
 #include <limits>
 #include <optional>
 
@@ -18,31 +19,37 @@ concept HasLess = requires(const T& a, const T& b) { { a < b } -> std::convertib
 template<typename T>
 concept HasGreater = requires(const T& a, const T& b) { { a > b } -> std::convertible_to<bool>; };
 
-template<HasLess T> using max_pq = std::priority_queue<T, std::vector<T>, std::less<T>>;
-
-template<HasGreater T> using min_pq = std::priority_queue<T, std::vector<T>, std::greater<T>>;
-
 template <Weight T> struct Edge { 
     T w;
     size_t to;
-    inline auto operator <=>(const Edge&) const noexcept = default;
+    inline auto operator <=> (const Edge&) const noexcept = default;
 };
 
-template<Weight T> inline auto inf() -> T { return std::numeric_limits<T>::max(); }
+template<Weight T>
+constexpr auto max{std::numeric_limits<T>::max};
+
+template<Weight T> 
+constexpr auto inf{std::numeric_limits<T>::has_infinity ? std::numeric_limits<T>::infinity : max<T>};
 
 template<Weight T> class Graph {
 public:
     inline Graph() = default;
     inline explicit Graph(size_t n_) : n(n_ + 1), g(n) {
-        for (size_t i{1}; i < n; ++i) add(0, i, 0);
+        for (size_t i{1}; i < n; ++i) {
+            add(0, i, 0);
+        }
     }
-    inline void add(size_t u, size_t v, T w) {  g[u].emplace_back(w, v); }
+    inline auto add(size_t u, size_t v, T w) -> void {  
+        g[u].emplace_back(w, v); 
+    }
     [[nodiscard]] inline auto get_distance() -> std::optional<std::vector<std::vector<T>>> {
         auto dp = FordBelman(0);
         if (!dp.has_value()) return std::nullopt;
         auto h = std::move(dp.value());
         for (size_t u{0}; u < n; ++u) {
-            for (auto& [w, v] : g[u]) w = w + h[u] - h[v];
+            for (auto& [w, v] : g[u]) {
+                w = w + h[u] - h[v];
+            }
         }
         std::vector<std::vector<T>> res;
         res.reserve(n);
@@ -57,22 +64,21 @@ public:
     };
 private:
     [[nodiscard]] inline auto dijkstra(size_t s) -> std::vector<T> const {
-        min_pq<Edge<T>> pq;
+        std::set<Edge<T>> st;
         std::vector<T> dp(n, inf<T>());
         dp[s] = T{0};
-        pq.emplace(dp[s], s);
-        while (!pq.empty()) {
-            auto [weight, v] = pq.top();
-            pq.pop();
+        st.emplace(dp[s], s);
+        while (!st.empty()) {
+            auto [weight, v] = *st.begin();
+            st.erase(st.begin());
             for (auto [w, to] : g[v]) {
-                if (chmin(dp[to], weight + w)) pq.emplace(dp[to], to);
+                if (chmin(dp[to], weight + w)) st.emplace(dp[to], to);
             }
         }
         return dp;
     }
     [[nodiscard]] inline auto FordBelman(size_t s) -> std::optional<std::vector<T>> const {
         std::vector<T> dp(n, inf<T>());
-        std::vector<T> ndp(n, inf<T>());
         bool is_relaxed{false};
         dp[0] = 0;
         for (size_t k{1}; k <= n; ++k) {
@@ -80,10 +86,9 @@ private:
             for (size_t u{0}; u < n; ++u) {
                 for (auto [w, v] : g[u]) {
                     if (dp[u] == inf<T>()) continue;
-                    if (chmin(ndp[v], dp[u] + w)) is_relaxed = true;
+                    if (chmin(dp[v], dp[u] + w)) is_relaxed = true;
                 }
             }
-            dp = ndp;
         }
         if (is_relaxed) return std::nullopt;
         return dp;
